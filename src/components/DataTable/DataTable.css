@@ -1,6 +1,7 @@
 .datatable .col {
     cursor: pointer;
-    background-color: aqua;
+    background-color:purple;
+    color: white;
 }
 
 .datatable .col .pointer:after {

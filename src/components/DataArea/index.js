@@ -1,98 +1,81 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import DataTable from "../DataTable";
 import Nav from "../Nav";
 import API from "../../utils/API";
-import "./DataArea.css"
+import "./DataArea.css";
 import DataAreaContext from "../../utils/DataAreaContext"
 
 const DataArea = () => {
-      const [developerState, setDeveloperState] = React.useState({
+      const [developerState, setDeveloperState] = useState({
         users: [],
-        order: "descend",
+        order: "ascend",
         filteredUsers: [],
         headings: [
-          { name: "Image", width: "10%", order: "descend" },
-          { name: "name", width: "10%", order: "descend" },
-          { name: "phone", width: "20%", order: "descend" },
-          { name: "email", width: "20%", order: "descend" },
-          { name: "dob", width: "10%", order: "descend" }
+          { name: "Image", width: "10%", },
+          { name: "Name", width: "10%", },
+          { name: "Phone", width: "20%", },
+          { name: "Email", width: "20%", },
+          { name: "DOB", width: "10%", }
         ]
       });
     
       const handleSort = heading => {
-        let currentOrder = developerState.headings
-          .filter(elem => elem.name === heading)
-          .map(elem => elem.order)
-          .toString();
-    
-        if (currentOrder === "descend") {
-          currentOrder = "ascend";
-        } else {
-          currentOrder = "descend";
-        }
+        if (developerState.order === "descend") {
+            setDeveloperState({
+                order:"ascend"
+            })
+        } else{
+            setDeveloperState({
+                order:"descend"
+            })
+        }
     
         const compareFnc = (a, b) => {
-          if (currentOrder === "ascend") {
-         
+          if (developerState.order === "ascend") {
             if (a[heading] === undefined) {
               return 1;
             } else if (b[heading] === undefined) {
               return -1;
-            }
-            
-            else if (heading === "name") {
+            } else if (heading === "name") {
               return a[heading].first.localeCompare(b[heading].first);
-            } else if (heading === "dob") {
-              return a[heading].age - b[heading].age;
             } else {
-              return a[heading].localeCompare(b[heading]);
-            }
+              return b[heading] - a[heading];
+            } 
           } else {
-            
-            if (a[heading] === undefined) {
-              return 1;
-            } else if (b[heading] === undefined) {
-              return -1;
-            }
-           
-            else if (heading === "name") {
-              return b[heading].first.localeCompare(a[heading].first);
-            }else if (heading === "dob") {
-              return b[heading].age - a[heading].age;
-            }  else {
-              return b[heading].localeCompare(a[heading]);
-            }
-          }
-        };
+        if (a[heading] === undefined){
+            return 1;
+        } else if (b[heading] === undefined){
+            return -1;
+        } else if (heading ==="name"){
+            return b[heading].first.localeCompare(a[heading].first);
+        } else {
+return b[heading]-  a[heading];
+        }
+    }
+    }
         const sortedUsers = developerState.filteredUsers.sort(compareFnc);
-        const updatedHeadings = developerState.headings.map(elem => {
-          elem.order = elem.name === heading ? currentOrder : elem.order;
-          return elem;
-        });
-    
+
         setDeveloperState({
           ...developerState,
-          filteredUsers: sortedUsers,
-          headings: updatedHeadings
-        });
-      };
-    
+          filteredUsers: sortedUsers
+});
+
+ };
+   
       const handleSearchChange = event => {
         const filter = event.target.value;
         const filteredList = developerState.users.filter(item => {
-          let values = item.name.first.toLowerCase() + " " + item.name.last.toLowerCase();
-          console.log(filter, values)
-        if(values.indexOf(filter.toLowerCase()) !== -1){
-          return item
-        };
+          let values = item.name.first.toLowerCase();
+          return values.indexOf(filter.toLowerCase()) !== -1;
         });
     
-        setDeveloperState({ ...developerState, filteredUsers: filteredList });
+        setDeveloperState({ 
+        ...developerState, 
+        filteredUsers: filteredList });
       };
 
-      React.useEffect(() => {
+      useEffect(() => {
         API.getUsers().then(results => {
-          console.log(results.data.results);
           setDeveloperState({
             ...developerState,
             users: results.data.results,
@@ -107,10 +90,13 @@ const DataArea = () => {
         >
           <Nav />
           <div className="data-area">
-            {developerState.filteredUsers.length > 0 ? <DataTable /> : <div></div>}
+            {developerState.filteredUsers.length > 0 
+    ? <DataTable />
+     : <div></div>
+     }
           </div>
         </DataAreaContext.Provider>
       );
-    };
+    }
     
     export default DataArea;
