@@ -4,7 +4,7 @@
 * This app utilizes an API to populate random users and then create a directory. Other users on the app can search for employees by "name" and also organize each field (Name, Email, DOB) in ascending or descending order.
 
 ## GIF of Functionality
- ![App Function](https://github.com/Jupton2020/BurgerApp/blob/master/public/assets/img/Screen%20Shot%202020-01-19%20at%205.53.37%20PM.png?raw=true)
+![App Function](https://github.com/Jupton2020/React-employee-directory/blob/master/public/React-App.gif)
 ## Link
 * Heroku: https://reactdirectory.herokuapp.com/
 
